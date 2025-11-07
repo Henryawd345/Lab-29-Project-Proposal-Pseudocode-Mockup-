@@ -111,26 +111,53 @@ void simulateTick(ColonyMap& colonies /*, int year */) {
 
 int main() {
     // Initialize a map<string, array<list<string>, 3>> to store colony data
+
+    assert(categoryIndex("colonist")  == 0);
+    assert(categoryIndex("resource")  == 1);
+    assert(categoryIndex("structure") == 2);
+    assert(categoryIndex("x")         == -1);
+    assert(categoryIndex("")          == -1);
+    assert(categoryIndex("Colonist")  == -1);
+
     ColonyMap colonies;
 
-    if (!loadData("data.txt", colonies)){
-        cerr << "ERROR: could not open data.txt\n";
-        return 1;
+    // loadData missing file
+    {
+        ColonyMap m;
+        bool ok = loadData("_file_should_not_exist_.txt", m);
+        assert(ok == false);
+        assert(m.empty());
     }
 
-    printState(colonies, "Initial Data Load (Alpha)");
+    // loadData valid file
+    {
+        const char* tmp = "tmp_test_data.txt";
+        ofstream out(tmp);
+        out << "Mars|colonist|Ava-Eng\n";
+        out << "Mars|resource|Water-3\n";
+        out << "Luna|structure|Habitat-A\n";
+        out << "BadLineNoPipes\n"; // malformed -> should be skipped
+        out.close();
 
-    // Begin a time-based simulation (discrete events)
-    // For 30 years:
-    for (int year = 1; year <= 30; ++year) {
-        // Call pseudocode function (no real changes done here for Lab 29)
-        simulateTick(colonies /*, year */);
+        ColonyMap m;
+        bool ok = loadData(tmp, m);
+        assert(ok == true);
 
-        // Optionally print a placeholder yearly summary line
-        cout << "Year " << year << ": (pseudocode changes would be summarized here)\n";
+        // planets
+        assert(m.count("Mars") == 1);
+        assert(m.count("Luna") == 1);
+
+        // list sizes by index
+        // [0] colonists, [1] resources, [2] structures
+        assert(m["Mars"][0].size() == 1);
+        assert(m["Mars"][1].size() == 1);
+        assert(m["Mars"][2].size() == 0);
+
+        assert(m["Luna"][0].size() == 0);
+        assert(m["Luna"][1].size() == 0);
+        assert(m["Luna"][2].size() == 1);
     }
 
-    printState(colonies, "Final State (Alpha)");
-
+    cout << "Unit tests passed.\n";
     return 0;
 }
