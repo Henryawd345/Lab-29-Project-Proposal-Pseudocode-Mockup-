@@ -1,0 +1,38 @@
+Project Overview:
+My project creates a space colonization simulation that models the early stages 
+of human expansion across multiple planets such as Mars, Luna, Europa, and Titan. 
+The program shows how each colony changes over time as populations grow or shrink, 
+resources are consumed or produced, and new structures are built. The simulation 
+advances in fixed time steps (“years”) and demonstrates how different colonies 
+develop under changing conditions.
+
+Implementation:
+The project uses a std::map to store and manage the state of each colony.
+  The map key represents the planet name (e.g., "Mars").
+  The map value is an std::array of three std::lists, which store:
+    Colonists (names/roles)
+    Resources (materials, oxygen, fuel, etc.)
+    Structures (habitats, labs, reactors)
+
+
+All starting data is loaded from an external file (data.txt) 
+with at least 100 lines in the format:
+Planet | Category | Item
+where Category is one of {colonist, resource, structure}.
+
+Each map entry represents the full state of a single colony, 
+and the simulation updates this state over time.
+
+Simulated Events:
+The simulation models three main types of changes each year:
+  Population change – A new recruit may arrive, or a colonist may transfer to another planet.
+
+  Resource change – Resources may be produced, consumed, or lost.
+
+  Construction change – A new structure may be built, or an old structure may be decommissioned.
+
+Each of these events happens at discrete time steps, making this a discrete-event simulation 
+rather than a continuous model. The program begins by displaying the initial colony data, 
+then runs for 30 simulated years (meeting the 25+ requirement), 
+printing a short summary of changes after each year, and finally showing the updated final state.
+
