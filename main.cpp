@@ -44,6 +44,15 @@ bool loadData(const string& path, ColonyMap& colonies){
 
 }
 
+void printState(const ColonyMap& colonies, const string& title){
+    cout << "\n=== " << title << " ===\n";
+    for (const auto& [planet, triple] : colonies){
+        cout << "- " << planet << " | colonists =" << triple[0].size()
+        << ", resources =" << triple[1].size()
+        << ", structures =" << triple[2].size() << "\n";
+    }
+
+}
 
 
 
@@ -62,19 +71,12 @@ int main() {
     // Initialize a map<string, array<list<string>, 3>> to store colony data
     ColonyMap colonies;
 
-    // Open external file "data.txt" and populate the map
-    // If file fails to open, print error and exit
-    // PSEUDOCODE ONLY:
-    //     For each line "Planet|Category|Item"
-    //         Parse planet, category (colonist/resource/structure), and item
-    //         Insert into appropriate list for that planet
+    if (!loadData("data.txt", colonies)){
+        cerr << "ERROR: could not open data.txt\n";
+        return 1;
+    }
 
-    // For Lab 29 mockup: insert ONE dummy element so printState shows something
-    colonies["Mars"][0].push_back("Recruit-Example");     // colonist
-    colonies["Mars"][1].push_back("ResourcePack-Example"); // resource
-    colonies["Mars"][2].push_back("Structure-Example");    // structure
-
-    // Print one-line summary
+    printState(colonies, "Initial Data Load (Alpha)");
 
     // Begin a time-based simulation (discrete events)
     // For 30 years:
@@ -86,7 +88,7 @@ int main() {
         cout << "Year " << year << ": (pseudocode changes would be summarized here)\n";
     }
 
-    // Print final one-line state
+    printState(colonies, "Final State (Alpha)");
 
     return 0;
 }
