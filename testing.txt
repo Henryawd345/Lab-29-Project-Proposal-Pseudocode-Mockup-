@@ -1,0 +1,163 @@
+Alpha Release — testing.txt
+
+Purpose
+The goal of this Alpha test file is to show how core functions in the program would be unit-tested.
+For Alpha, we are only testing two functions:
+1) categoryIndex(const string&) — converts a category string into an index (0,1,2)
+2) loadData(const string&, ColonyMap&) — loads "Planet|Category|Item" data into the nested map
+
+Data Model
+ColonyMap = map<string, array<list<string>,3>>
+    index 0 → colonists
+    index 1 → resources
+    index 2 → structures
+
+Test Plan
+A) categoryIndex
+   - "colonist"  → 0
+   - "resource"  → 1
+   - "structure" → 2
+   - invalid inputs like "x", "", "Colonist" (capital C) → -1  (case-sensitive)
+
+B) loadData
+   - Returns false if the file cannot be opened
+   - Returns true for a valid file
+   - Correctly splits: planet | category | item
+   - Skips empty or error line
+   - Appends item to the correct list index based on categoryIndex
+   - Creates new planet keys on first sight
+   - Leaves map empty/unchanged if file is empty or missing
+
+Manual Procedure
+1) Create a small file named tmp_test_data.txt with:
+   Mars|colonist|Ava-Eng
+   Mars|resource|Water-3
+   Luna|structure|Habitat-A
+   BadLineNoPipes
+
+2) Build and run the driver below. Expected: "Unit tests passed."
+
+--------------------------------------------------------------------------
+Driver program
+--------------------------------------------------------------------------
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
+#include <array>
+#include <list>
+
+using namespace std;
+
+// Data model: map<string, array<list<string>, 3>>
+// 0 -> colonists, 1 -> resources, 2 -> structures
+using ColonyMap = map<string, array<list<string>, 3>>;
+
+int categoryIndex(const string cate){
+    if (cate == "colonist") return 0;
+    if (cate == "resource") return 1;
+    if (cate == "structure") return 2;
+    return -1;
+}
+
+bool loadData(const string& path, ColonyMap& colonies){
+    ifstream in(path);
+    if (!in) return false;
+
+    string line;
+    while (getline(in, line)){
+        if (line.empty()) continue;
+
+        auto p1 = line.find('|');
+        auto p2 = (p1 == string::npos) ? string::npos : line.find('|', p1 + 1);
+        if (p1 == string::npos || p2 == string::npos) continue;
+
+        string planet   = line.substr(0, p1);
+        string category = line.substr(p1 + 1, p2 - p1 - 1);
+        string item     = line.substr(p2 + 1);
+
+        int index = categoryIndex(category);
+        if (index >= 0 && index <=2){
+            colonies[planet][index].push_back(item);
+
+        }
+    }
+    return true;
+
+}
+
+void printState(const ColonyMap& colonies, const string& title){
+    cout << "\n=== " << title << " ===\n";
+    for (const auto& [planet, triple] : colonies){
+        cout << "- " << planet << " | colonists =" << triple[0].size()
+        << ", resources =" << triple[1].size()
+        << ", structures =" << triple[2].size() << "\n";
+    }
+
+}
+
+
+
+void simulateTick(ColonyMap& colonies /*, int year */) {
+    // For each planet in the map:
+    //     Decide population change (recruit or transfer)
+    //     Decide resource change (produce or consume)
+    //     Decide structure change (build or decommission)
+    //     Print a one-line summary of net deltas for this planet for the current year
+}
+
+// Minimal helper just to show structure compiles
+// Print a one-line summary of the net change for this planet for the current year
+
+int main() {
+    // Initialize a map<string, array<list<string>, 3>> to store colony data
+
+    assert(categoryIndex("colonist")  == 0);
+    assert(categoryIndex("resource")  == 1);
+    assert(categoryIndex("structure") == 2);
+    assert(categoryIndex("x")         == -1);
+    assert(categoryIndex("")          == -1);
+    assert(categoryIndex("Colonist")  == -1);
+
+    ColonyMap colonies;
+
+    // loadData missing file
+    {
+        ColonyMap m;
+        bool ok = loadData("_file_should_not_exist_.txt", m);
+        assert(ok == false);
+        assert(m.empty());
+    }
+
+    // loadData valid file
+    {
+        const char* tmp = "tmp_test_data.txt";
+        ofstream out(tmp);
+        out << "Mars|colonist|Ava-Eng\n";
+        out << "Mars|resource|Water-3\n";
+        out << "Luna|structure|Habitat-A\n";
+        out << "BadLineNoPipes\n"; // malformed -> should be skipped
+        out.close();
+
+        ColonyMap m;
+        bool ok = loadData(tmp, m);
+        assert(ok == true);
+
+        // planets
+        assert(m.count("Mars") == 1);
+        assert(m.count("Luna") == 1);
+
+        // list sizes by index
+        // [0] colonists, [1] resources, [2] structures
+        assert(m["Mars"][0].size() == 1);
+        assert(m["Mars"][1].size() == 1);
+        assert(m["Mars"][2].size() == 0);
+
+        assert(m["Luna"][0].size() == 0);
+        assert(m["Luna"][1].size() == 0);
+        assert(m["Luna"][2].size() == 1);
+    }
+
+    cout << "Unit tests passed.\n";
+    return 0;
+}
