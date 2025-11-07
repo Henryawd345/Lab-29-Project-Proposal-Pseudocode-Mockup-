@@ -10,6 +10,43 @@ using namespace std;
 // Data model: map<string, array<list<string>, 3>>
 // 0 -> colonists, 1 -> resources, 2 -> structures
 using ColonyMap = map<string, array<list<string>, 3>>;
+
+int categoryIndex(const string cate){
+    if (cate == "colonist") return 0;
+    if (cate == "resource") return 1;
+    if (cate == "structure") return 2;
+    return -1;
+}
+
+bool loadData(const string& path, ColonyMap& colonies){
+    ifstream in(path);
+    if (!in) return false;
+
+    string line;
+    while (getline(in, line)){
+        if (line.empty()) continue;
+
+        auto p1 = line.find('|');
+        auto p2 = (p1 == string::npos) ? string::npos : line.find('|', p1 + 1);
+        if (p1 == string::npos || p2 == string::npos) continue;
+
+        string planet   = line.substr(0, p1);
+        string category = line.substr(p1 + 1, p2 - p1 - 1);
+        string item     = line.substr(p2 + 1);
+
+        int index = categoryIndex(category);
+        if (index >= 0 && index <=2){
+            colonies[planet][index].push_back(item);
+
+        }
+    }
+    return true;
+
+}
+
+
+
+
 void simulateTick(ColonyMap& colonies /*, int year */) {
     // For each planet in the map:
     //     Decide population change (recruit or transfer)
