@@ -56,12 +56,13 @@ void printState(const ColonyMap& colonies, const string& title){
 
 
 
-void simulateTick(ColonyMap& colonies /*, int year */) {
-    // For each planet in the map:
-    //     Decide population change (recruit or transfer)
-    //     Decide resource change (produce or consume)
-    //     Decide structure change (build or decommission)
-    //     Print a one-line summary of net deltas for this planet for the current year
+void simulateTick(ColonyMap& colonies) {
+    if (colonies.empty()) return;
+
+    vector<string> planets;
+    planets.reserve(colonies.size());
+    for (auto& kv : colonies) planets.push_back(kv.first);
+
 }
 
 // Minimal helper just to show structure compiles
