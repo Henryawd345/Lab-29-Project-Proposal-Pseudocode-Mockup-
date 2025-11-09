@@ -59,13 +59,29 @@ void printState(const ColonyMap& colonies, const string& title){
 
 
 void simulateTick(ColonyMap& colonies) {
-    if (colonies.empty()) return;
+    int step = 0;
 
-    vector<string> planets;
-    planets.reserve(colonies.size());
-    for (auto& kv : colonies) planets.push_back(kv.first);
+    for (auto& [planet, triple] : colonies){
+        int dC = 0, dR = 0, dS = 0; //d = delta (change over time)
 
-    
+        int actC = step % 3;
+        int actR = (step + 1) % 3;
+        int actS = (step + 2) % 3;
+
+        if (actC == 0) {
+            int id = 1;
+            triple[0].push_back("Recruit-" + to_string(id++));
+            dC++;
+        } else if (actC == 1 && !triple[0].empty()) {
+            triple[0].pop_back();
+            dC--;
+        }
+
+        
+
+        
+
+    }
 
 
 }
