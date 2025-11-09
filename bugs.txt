@@ -1,7 +1,32 @@
-Uniidentified vector
+1.Uniidentified vector
     add include<vector>
 
-else if (actR == 1 && !triple[0].empty()) {
+2.else if (actR == 1 && !triple[0].empty()) 
             triple[0].pop_back();
             dR--;
 (accidently use triple [0] instead of triple[1] making them not showing the correct output) 
+    change from triple[0] to triple[1]
+
+3.decide to not use <vector> in the code so it was taken out.
+
+4.int id = 1 and int rid =1 rest to 1 
+    c change them to static to make them not change
+
+5.wrong label pushed "recruit-" into resources part
+    change it to resourcePack
+
+6.removing from an empty list would crash
+    create a net with !triple[i].empty()
+
+7.Program will still run without data if file open failed
+    Ifstream check; print error and return 1 when data.txt missing.
+
+8.weird output misalignment because no format
+    now with iomanip makes it more readable
+
+9.Comment clarity on deltas
+    int dC = 0, dR = 0, dS = 0;
+    the d were looking like it wassn't obviouse what they are so I added a comment on it
+
+10.Copied the colonist block ro resource block and forgot to change them so it output the wrong data
+    I change thme back to their correct one

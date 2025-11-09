@@ -3,7 +3,6 @@
 #include <string>
 #include <map>
 #include <array>
-#include <vector>
 #include <list>
 #include <iomanip>
 
@@ -59,7 +58,9 @@ void printState(const ColonyMap& colonies, const string& title){
 
 
 void simulateTick(ColonyMap& colonies) {
-    int step = 0;
+    if (colonies.empty()) return;
+    
+    static int step = 0;
 
     for (auto& [planet, triple] : colonies){
         int dC = 0, dR = 0, dS = 0; //d = delta (change over time)
@@ -69,7 +70,7 @@ void simulateTick(ColonyMap& colonies) {
         int actS = (step + 2) % 3;
 
         if (actC == 0) {
-            int id = 1;
+            static int id = 1;
             triple[0].push_back("Recruit-" + to_string(id++));
             dC++;
         } else if (actC == 1 && !triple[0].empty()) {
@@ -78,8 +79,8 @@ void simulateTick(ColonyMap& colonies) {
         }
 
         if (actR == 0) {
-            int rid = 1;
-            triple[0].push_back("Recruit-" + to_string(rid++));
+            static int rid = 1;
+            triple[1].push_back("ResourcePack-" + to_string(rid++));
             dR++;
         } else if (actR == 1 && !triple[1].empty()) {
             triple[1].pop_back();
@@ -95,16 +96,14 @@ void simulateTick(ColonyMap& colonies) {
             dS--;
         }
 
-
-        
-
+        cout << left << setw(10) << planet
+            << "Delta C = " << setw(3) << dC
+            << "Delta R = "  << setw(3) << dR
+            << "Delta S = "  << setw(3) << dS << "\n";
     }
-
-
+    step++;
 }
 
-// Minimal helper just to show structure compiles
-// Print a one-line summary of the net change for this planet for the current year
 
 int main() {
     // Initialize a map<string, array<list<string>, 3>> to store colony data
@@ -120,9 +119,8 @@ int main() {
     // Begin a time-based simulation (discrete events)
     // For 30 years:
     for (int year = 1; year <= 30; ++year) {
-        // Call pseudocode function (no real changes done here for Lab 29)
 
-        cout << "Year " << year << ":\n";
+        cout << "\nYear " << year << ":\n";
         simulateTick(colonies);
 
         
