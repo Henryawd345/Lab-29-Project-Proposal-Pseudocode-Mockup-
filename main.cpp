@@ -5,6 +5,7 @@
 #include <array>
 #include <vector>
 #include <list>
+#include <iomanip>
 
 using namespace std;
 
@@ -64,6 +65,9 @@ void simulateTick(ColonyMap& colonies) {
     planets.reserve(colonies.size());
     for (auto& kv : colonies) planets.push_back(kv.first);
 
+    
+
+
 }
 
 // Minimal helper just to show structure compiles
@@ -84,7 +88,7 @@ int main() {
     // For 30 years:
     for (int year = 1; year <= 30; ++year) {
         // Call pseudocode function (no real changes done here for Lab 29)
-        simulateTick(colonies /*, year */);
+        simulateTick(colonies);
 
         // Optionally print a placeholder yearly summary line
         cout << "Year " << year << ": (pseudocode changes would be summarized here)\n";
