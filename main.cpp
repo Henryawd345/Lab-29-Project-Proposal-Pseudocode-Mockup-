@@ -77,7 +77,24 @@ void simulateTick(ColonyMap& colonies) {
             dC--;
         }
 
-        
+        if (actR == 0) {
+            int rid = 1;
+            triple[0].push_back("Recruit-" + to_string(rid++));
+            dR++;
+        } else if (actR == 1 && !triple[1].empty()) {
+            triple[1].pop_back();
+            dR--;
+        }
+
+        if (actS == 0) {
+            static int sid = 1;
+            triple[2].push_back("Structure-" + to_string(sid++));
+            dS++;
+        } else if (actS == 1 && !triple[2].empty()) {
+            triple[2].pop_back();
+            dS--;
+        }
+
 
         
 
@@ -98,19 +115,20 @@ int main() {
         return 1;
     }
 
-    printState(colonies, "Initial Data Load (Alpha)");
+    printState(colonies, "Initial Data Load (Beta)");
 
     // Begin a time-based simulation (discrete events)
     // For 30 years:
     for (int year = 1; year <= 30; ++year) {
         // Call pseudocode function (no real changes done here for Lab 29)
+
+        cout << "Year " << year << ":\n";
         simulateTick(colonies);
 
-        // Optionally print a placeholder yearly summary line
-        cout << "Year " << year << ": (pseudocode changes would be summarized here)\n";
+        
     }
 
-    printState(colonies, "Final State (Alpha)");
+    printState(colonies, "Final State (Beta)");
 
     return 0;
 }

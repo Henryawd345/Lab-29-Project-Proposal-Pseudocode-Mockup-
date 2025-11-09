@@ -1,2 +1,7 @@
 Uniidentified vector
     add include<vector>
+
+else if (actR == 1 && !triple[0].empty()) {
+            triple[0].pop_back();
+            dR--;
+(accidently use triple [0] instead of triple[1] making them not showing the correct output) 
