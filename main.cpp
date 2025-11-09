@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <array>
+#include <vector>
 #include <list>
 
 using namespace std;
